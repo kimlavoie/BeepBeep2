@@ -10,16 +10,16 @@ public class ExternalProcessor{
     BufferedWriter writer;
     BufferedReader reader;
 
-  public ExternalProcessor() throws Exception{
-    ProcessBuilder pb = new ProcessBuilder("./test.py");
+  public ExternalProcessor(String program) throws Exception{
+    ProcessBuilder pb = new ProcessBuilder(program);
     Map<String, String> env = pb.environment();
     env.put("PYTHONUNBUFFERED", "true");
     p = pb.redirectErrorStream(true).start(); 
     writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
     reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-    run("lala");
-    run("lolo");
+    run("event: {x: 0}");
+    run("event: {x: 34}");
   }
   
   public void run(String event) throws Exception{
@@ -35,7 +35,7 @@ public class ExternalProcessor{
   }
 
   public static void main(String args[]) throws Exception{
-    ExternalProcessor p = new ExternalProcessor();
+    ExternalProcessor p = new ExternalProcessor("./test.py");
     p.cleanup();
   }
 }
