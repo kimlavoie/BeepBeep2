@@ -26,7 +26,7 @@ public class ExternalProcessor{
     writer.write(event + "\n");
     writer.flush();
     String line;
-    line = reader.readLine();
+    while((line = reader.readLine()).equals("")){}
     System.out.println(line);
   }
 
