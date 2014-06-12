@@ -7,7 +7,7 @@ import java.io.BufferedWriter;
 import java.util.Map;
 import com.beepbeep.processor.Processor;
 
-public class ExternalProcessor implements Processor{
+public class ExternalProcessor extends Processor{
 
     Process p; 
     BufferedWriter writer;

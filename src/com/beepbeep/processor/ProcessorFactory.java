@@ -9,6 +9,9 @@ public class ProcessorFactory{
   ClassLoader classLoader = ProcessorFactory.class.getClassLoader();
 
   public Processor getProcessor(String className){
+    /**
+      Generate a processor from the classname by calling the constructor without parameters
+    */
     try{
       Class cl = classLoader.loadClass("com.beepbeep.processor." + className);
       return (Processor) cl.newInstance();
@@ -20,6 +23,9 @@ public class ProcessorFactory{
   }
 
   public Processor getProcessor(String className, String... params){
+    /**
+      Generate a processor from the classname, calling the constructor with the same amounts of String parameters passed
+    */
     try{
       Object[] parameters = params;
       Class cl = classLoader.loadClass("com.beepbeep.processor." + className);
@@ -41,6 +47,7 @@ public class ProcessorFactory{
     return null;
   }
 
+  // For test purpose
   public static void main(String[] args){
     ProcessorFactory processorFactory = new ProcessorFactory();
     Processor processor = processorFactory.getProcessor("DummyProcessor");
