@@ -17,30 +17,51 @@ public class ExternalProcessor implements Processor{
   public ExternalProcessor(String program) throws Exception{
     ProcessBuilder pb = new ProcessBuilder(directory + program);
     Map<String, String> env = pb.environment();
-    env.put("PYTHONUNBUFFERED", "true");
+    env.put("PYTHONUNBUFFERED", "true");         //To force python scripts to not buffer IO
     p = pb.redirectErrorStream(true).start(); 
     writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
     reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
   }
   
   public void run(String... events){
+    /**
+      Overriden from Processor
+      Send event to program stdin, then listen for response on stdout
+    */
     String event = events[0];
     try{
       writer.write(event + "\n");
       writer.flush();
-      String line;
-      while((line = reader.readLine()).equals("")){}
-      System.out.println(line);
+      String response = readBuffer();
+      System.out.print("ExternalProcessor response:\n" + response);
     }catch(Exception e){
       e.printStackTrace();
       System.exit(1);
     }
   }
 
+  private String readBuffer() throws Exception{
+    /**
+      Called within run routine to read everything sent to the stdout by the external program
+    */
+      String response = new String();
+      String line;
+      line = reader.readLine();
+      response += line + "\n";
+      while(reader.ready()){
+        line = reader.readLine();
+        response += line + "\n";
+      }
+      return response;
+    
+  }
+
   public void cleanup(){
     p.destroy();
   }
 
+// For testing purposes
+/*
   public static void main(String args[]) throws Exception{
     System.out.println("PYTHON");
     System.out.println("------");
@@ -57,4 +78,5 @@ public class ExternalProcessor implements Processor{
     p2.run("event: {x: 10}");
     p2.cleanup();
   }
+*/
 }
