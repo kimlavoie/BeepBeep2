@@ -12,7 +12,7 @@ public class ExternalProcessor implements Processor{
     Process p; 
     BufferedWriter writer;
     BufferedReader reader;
-    String directory = "com/beepbeep/processor/";
+    String directory = "external/";
 
   public ExternalProcessor(String program) throws Exception{
     ProcessBuilder pb = new ProcessBuilder(directory + program);
