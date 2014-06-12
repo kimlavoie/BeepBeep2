@@ -46,7 +46,7 @@ public class ProcessorFactory{
     Processor processor = processorFactory.getProcessor("DummyProcessor");
     Processor processor2 = processorFactory.getProcessor("ExternalProcessor", "test.py");
     Processor processor3 = processorFactory.getProcessor("ExternalProcessor", "test.rb");
-    processor.run("dummy");
+    processor.run();
     processor2.run("event: {x: 0}");
     processor3.run("event: {x: 0}");
   }

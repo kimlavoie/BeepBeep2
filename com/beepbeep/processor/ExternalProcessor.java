@@ -23,12 +23,13 @@ public class ExternalProcessor implements Processor{
     reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
   }
   
-  public void run(String event){
+  public void run(String... events){
+    String event = events[0];
     try{
       writer.write(event + "\n");
       writer.flush();
       String line;
-      while((line = reader.readLine()).equals("")){System.out.println("empty line");}
+      while((line = reader.readLine()).equals("")){}
       System.out.println(line);
     }catch(Exception e){
       e.printStackTrace();
