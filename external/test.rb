@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-$stdout.sync = true
 require 'yaml'
 
 while true

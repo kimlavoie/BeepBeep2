@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import yaml
 
 i = 2

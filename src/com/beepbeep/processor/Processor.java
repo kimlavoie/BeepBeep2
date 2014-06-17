@@ -44,5 +44,7 @@ public abstract class Processor{
     return (String[]) events.toArray();
   }
 
+  public void cleanup(){}
+
   public abstract void run(String... events);
 }
