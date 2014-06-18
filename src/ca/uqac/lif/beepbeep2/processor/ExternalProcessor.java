@@ -44,7 +44,7 @@ public class ExternalProcessor extends Processor{
 
 
   public void rubyInit(){
-    String tmp = System.getProperty("java.io.tmp") + program;
+    String tmp = System.getProperty("java.io.tmpdir") + "/" + program;
     try{
       String fileContent = new String(Files.readAllBytes(Paths.get(directory + program)));
       fileContent = "$stdout.sync = true\n" + fileContent;
@@ -59,7 +59,7 @@ public class ExternalProcessor extends Processor{
   }
   
   public void perlInit(){
-    String tmp = System.getProperty("java.io.tmp") + program;
+    String tmp = System.getProperty("java.io.tmpdir") + "/" + program;
     try{
       String fileContent = new String(Files.readAllBytes(Paths.get(directory + program)));
       fileContent = "$| = 1;\n" + fileContent;
