@@ -8,7 +8,7 @@
   </target>
 
   <target name="run">
-    <java classpath="build/classes" classname="com.beepbeep.processor.ProcessorFactory" />
+    <java classpath="build/classes" classname="ca.uqac.lif.beepbeep2.processor.ProcessorFactory" />
   </target>
 
   <target name="clean">

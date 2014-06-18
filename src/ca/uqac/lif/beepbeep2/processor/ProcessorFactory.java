@@ -1,6 +1,6 @@
-package com.beepbeep.processor;
+package ca.uqac.lif.beepbeep2.processor;
 
-import com.beepbeep.processor.Processor;
+import ca.uqac.lif.beepbeep2.processor.Processor;
 import java.util.List;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class ProcessorFactory{
       Generate a processor from the classname by calling the constructor without parameters
     */
     try{
-      Class cl = classLoader.loadClass("com.beepbeep.processor." + className);
+      Class cl = classLoader.loadClass("ca.uqac.lif.beepbeep2.processor." + className);
       return (Processor) cl.newInstance();
     }catch(Exception e){
       e.printStackTrace();
@@ -28,7 +28,7 @@ public class ProcessorFactory{
     */
     try{
       Object[] parameters = params;
-      Class cl = classLoader.loadClass("com.beepbeep.processor." + className);
+      Class cl = classLoader.loadClass("ca.uqac.lif.beepbeep2.processor." + className);
       Constructor cons = null;
       for(Constructor constructor: cl.getConstructors()){
         if(constructor.getParameterTypes().length == parameters.length){

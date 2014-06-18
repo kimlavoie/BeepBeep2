@@ -1,4 +1,4 @@
-package com.beepbeep.processor;
+package ca.uqac.lif.beepbeep2.processor;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -9,7 +9,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
-import com.beepbeep.processor.Processor;
+import ca.uqac.lif.beepbeep2.processor.Processor;
 
 public class ExternalProcessor extends Processor{
 

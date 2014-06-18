@@ -1,4 +1,4 @@
-package com.beepbeep.processor;
+package ca.uqac.lif.beepbeep2.processor;
 
 import java.util.List;
 import java.util.ArrayList;

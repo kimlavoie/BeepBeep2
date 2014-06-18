@@ -1,5 +1,6 @@
-package com.beepbeep.processor;
-import com.beepbeep.processor.Processor;
+package ca.uqac.lif.beepbeep2.processor;
+
+import ca.uqac.lif.beepbeep2.processor.Processor;
 
 public class DummyProcessor extends Processor{
   public void run(String... events){
