@@ -4,9 +4,23 @@ import ca.uqac.lif.beepbeep2.processor.Processor;
 import java.util.List;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.net.URLClassLoader;
+import java.net.URL;
+import java.lang.reflect.Method;
 
 public class ProcessorFactory{
-  ClassLoader classLoader = ProcessorFactory.class.getClassLoader();
+  ClassLoader classLoader; 
+
+
+  public ProcessorFactory(){
+    try { 
+      URL url = new URL("jar:file:external/Test.jar!/");
+      classLoader = new URLClassLoader(new URL[]{url}, Thread.currentThread().getContextClassLoader());
+    } catch (Throwable t) { 
+      t.printStackTrace(); 
+    }
+    
+  }
 
   public Processor getProcessor(String className){
     /**
@@ -54,9 +68,11 @@ public class ProcessorFactory{
     Processor processor2 = processorFactory.getProcessor("ExternalProcessor", "test.py");
     Processor processor3 = processorFactory.getProcessor("ExternalProcessor", "test.rb");
     Processor processor4 = processorFactory.getProcessor("ExternalProcessor", "test.pl");
+    Processor processor5 = processorFactory.getProcessor("ProcessorTest");
     processor.run();
     processor2.run("event: {x: 0}");
     processor3.run("event: {x: 0}");
     processor4.run("event: {x: 8}");
+    processor5.run();
   }
 }
