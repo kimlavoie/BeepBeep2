@@ -22,28 +22,20 @@ public class ProcessorFactory{
     }
   }
 
-  public URL[] createURLs(){
+  public URL[] createURLs() throws Exception{
     ArrayList<URL> urls = new ArrayList<URL>();
-    try{
-      File dir = new File("external");
-      for(File f : dir.listFiles()){
-        String[] ext = f.getName().split("\\.");
-        if(ext.length > 1 && ext[1].equals("jar")){
-          urls.add(new URL("jar:file:external/" + f.getName() + "!/"));
-        }
+    File dir = new File("external");
+    for(File f : dir.listFiles()){
+      String[] ext = f.getName().split("\\.");
+      if(ext.length > 1 && ext[1].equals("jar")){
+        urls.add(new URL("jar:file:external/" + f.getName() + "!/"));
       }
-    }catch(Exception e){
-      e.printStackTrace();
     }
     return urls.toArray(new URL[urls.size()]);
   }
 
-  public void createClassLoader(URL[] urls){
-    try { 
+  public void createClassLoader(URL[] urls) throws Exception{
       classLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-    } catch (Throwable t) { 
-      t.printStackTrace(); 
-    }
   }
 
   public Processor getProcessor(String className){
