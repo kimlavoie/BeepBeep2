@@ -2,9 +2,13 @@
 
   <target name="main" depends="compile,run" />
 
+  <target name="testYaml" depends="compile">
+    <java classpath="build/classes:lib/snakeyaml-1.13.jar" classname="ca.uqac.lif.beepbeep2.yaml.YAMLWrapper" />
+  </target>
+
   <target name="compile">
     <mkdir dir="build/classes" />
-    <javac srcdir="src" destdir="build/classes" />
+    <javac classpath="lib/snakeyaml-1.13.jar" includeantruntime="false" srcdir="src" destdir="build/classes" />
   </target>
 
   <target name="run">
