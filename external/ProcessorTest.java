@@ -1,4 +1,4 @@
-package ca.uqac.lif.beepbeep2.processor;
+package org.test.processor;
      
 import ca.uqac.lif.beepbeep2.processor.Processor;
      

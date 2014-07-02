@@ -11,20 +11,25 @@ import java.io.File;
 
 public class ProcessorFactory{
   ClassLoader classLoader; 
+  final String externalDir = "./external";
 
+  private class ExternalDirectoryNotFoundException extends Exception{}
 
   public ProcessorFactory(){
     try{
       URL[] urls = createURLs();
       createClassLoader(urls);
+    }catch(ExternalDirectoryNotFoundException e){
+      System.err.println("\"" + externalDir + "\" directory not found.");
     }catch(Exception e){
       e.printStackTrace();
     }
   }
 
-  public URL[] createURLs() throws Exception{
+  public URL[] createURLs() throws ExternalDirectoryNotFoundException, Exception{
+    File dir = new File(externalDir);
+    if(!dir.isDirectory() || !dir.exists()) throw new ExternalDirectoryNotFoundException();
     ArrayList<URL> urls = new ArrayList<URL>();
-    File dir = new File("external");
     for(File f : dir.listFiles()){
       String[] ext = f.getName().split("\\.");
       if(ext.length > 1 && ext[1].equals("jar")){
@@ -43,7 +48,7 @@ public class ProcessorFactory{
       Generate a processor from the classname by calling the constructor without parameters
     */
     try{
-      Class cl = classLoader.loadClass("ca.uqac.lif.beepbeep2.processor." + className);
+      Class cl = classLoader.loadClass(className);
       return (Processor) cl.newInstance();
     }catch(Exception e){
       e.printStackTrace();
@@ -58,7 +63,7 @@ public class ProcessorFactory{
     */
     try{
       Object[] parameters = params;
-      Class cl = classLoader.loadClass("ca.uqac.lif.beepbeep2.processor." + className);
+      Class cl = classLoader.loadClass(className);
       Constructor cons = null;
       for(Constructor constructor: cl.getConstructors()){
         if(constructor.getParameterTypes().length == parameters.length){
@@ -80,11 +85,11 @@ public class ProcessorFactory{
   // For test purpose
   public static void main(String[] args){
     ProcessorFactory processorFactory = new ProcessorFactory();
-    Processor processor = processorFactory.getProcessor("DummyProcessor");
-    Processor processor2 = processorFactory.getProcessor("ExternalProcessor", "test.py");
-    Processor processor3 = processorFactory.getProcessor("ExternalProcessor", "test.rb");
-    Processor processor4 = processorFactory.getProcessor("ExternalProcessor", "test.pl");
-    Processor processor5 = processorFactory.getProcessor("ProcessorTest");
+    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+    Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
+    Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
+    Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
+    Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
     processor.run();
     processor2.run("event: {x: 0}");
     processor3.run("event: {x: 0}");
