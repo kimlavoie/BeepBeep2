@@ -18,28 +18,40 @@ public class YAMLWrapper{
     String str = "{a: 1, b: {c: {e: [1,2,3]}, d: [4, 5, 6, 7, 8], f: {e: [7,6,5,4]}}, t: [{a: 2, b: 3}, {a: 3, b: 4}]}";
     YAMLWrapper wrapper = new YAMLWrapper(str);
     int s = (int) wrapper.get("/b/c//e//0/");
+    System.out.print("Test #1: ");
     System.out.println(s);
     List l = (List) wrapper.get("b/d");
+    System.out.print("Test #2: ");
     System.out.println(l);
     Map m = (Map) wrapper.get("b");
+    System.out.print("Test #3: ");
     System.out.println(m);
     int i = (int) wrapper.get("b/d/0");
+    System.out.print("Test #4: ");
     System.out.println(i);
     List r = (List) wrapper.get("b/d/0..2");
+    System.out.print("Test #5: ");
     System.out.println(r);
     List r2 = (List) wrapper.get("b/d/..4");
+    System.out.print("Test #6: ");
     System.out.println(r2);
     List r3 = (List) wrapper.get("b/d/2..");
+    System.out.print("Test #7: ");
     System.out.println(r3);
     List r4 = (List) wrapper.get("b/d/2../..2");
+    System.out.print("Test #8: ");
     System.out.println(r4);
     List dictList = (List) wrapper.get("b/c,f/e");
+    System.out.print("Test #9: ");
     System.out.println(dictList);
     List dictList2 = (List) wrapper.get("b/c,f/e/!0");
+    System.out.print("Test #10: ");
     System.out.println(dictList2);
     List dictList3 = (List) wrapper.get("b/c,f/e/!0..2/!1");
+    System.out.print("Test #11: ");
     System.out.println(dictList3);
     List dictList4 = (List) wrapper.get("t/a,b/!0");
+    System.out.print("Test #12: ");
     System.out.println(dictList4);
     System.out.println(wrapper.dump());
   }
@@ -117,7 +129,7 @@ public class YAMLWrapper{
       ArrayList<Object> arr = new ArrayList<Object>();
       for(Object ob : list){
         Map m = (Map) ob;
-        arr.add(process(currentNode, ob));
+        arr.add(processMap(currentNode, m));
       }
       return arr;
     }
@@ -139,7 +151,7 @@ public class YAMLWrapper{
         ArrayList<Object> arr = new ArrayList<Object>();
         for(Object ob : list){
           List l = (List) ob;
-          arr.add(processListRange(currentNode, list));
+          arr.add(processListRange(currentNode, l));
         }
         return arr;
       }
