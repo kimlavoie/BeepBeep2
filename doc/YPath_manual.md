@@ -8,7 +8,7 @@ Reaching a dictionary entry:
     a/b/c = 3
   
 Reaching a list entry:
-  A number return the value at the zero-indexed position of the list, whatever the valie is.
+  A number return the value at the zero-indexed position of the list, whatever the value is.
 
   example:
     [[0, [1,2,3], 4], 5] 
