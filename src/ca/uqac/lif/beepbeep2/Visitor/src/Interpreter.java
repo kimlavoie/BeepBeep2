@@ -9,7 +9,7 @@ import ca.uqac.lif.bullwinkle.output.GraphvizVisitor;
 public class Interpreter {
 
 	public static void main(String[] args) {
-		String filename = "data/grammar.bnf";//"data/simple_grammar.bnf"; //"data/grammar-test.bnf";
+		String filename = "data/grammar.bnf";
 		String expression = "PRINT 2 OF YAML INPUT FILE \"filename.txt\" .";//"DEFINE (MULBY) AS A (BINARY_PROC), PARSE AS (X:TRACE) MULTIPLY (Y:TRACE), REWRITE AS (X) * (Y).";//"OUTPUT TO FILE \"filename.txt\" ALL OF INPUT FILE \"filename.txt\""; 
 		try
 	    {

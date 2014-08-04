@@ -11,28 +11,23 @@ import ca.uqac.lif.bullwinkle.output.OutputFormatVisitor;
 
 
 public class VisitorESQL implements OutputFormatVisitor {
-
-	//need one visit method which can get all the information for all the different existing processors
-	//how to do that? TODO
 	
-	String name, parameter;
+	String name = null, parameter = null;
 	
 	int size = 0;
 	Boolean options = false, file = false, after_name = false;
-	Boolean params = false, trace = false;
+	Boolean params = false, trace = false, newProcessor = false;
 	ArrayList<String> opts = new ArrayList<String>();
 	Map<String, String> map;
 	
 	public VisitorESQL() {
 		map = new LinkedHashMap<String, String>();
 	}
-	
-	//TODO in visit(), how to create new processor when output is processor
-	
+		
 	public void fillMap() {
 		String processor_non_terminal = null, processor_shortname = null;	
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader("C:/Users/Gabrielle/github/BeepBeep2/Grammar_Beepbeep2/processorsWithShortnames"));
+			BufferedReader reader = new BufferedReader(new FileReader("data/processorsWithShortnames"));
 			while (true) {
 				processor_non_terminal = reader.readLine();
 				if (processor_non_terminal == null) 
@@ -63,10 +58,11 @@ public class VisitorESQL implements OutputFormatVisitor {
 			name = CLASS_PATH + map.get(token).toLowerCase().replaceAll("\\s","");
 			System.out.println(name);		
 			after_name = true;
+			return;
 		}
 		if (after_name) {
 			if (!ChildrenList.isEmpty()) {
-				if (token.contains("_opt")) { //children will be options
+				if (token.contains("_opt")) { 
 					size = node.getSize();
 					options = true;
 				}
@@ -103,37 +99,37 @@ public class VisitorESQL implements OutputFormatVisitor {
 				file = true;
 			}
 			else if (token.contains("processor")) {
-				//TODO start building a new processor
 				parameter = token + ".output()";
+				params = false;
+				newProcessor = true;
+			}
+			if (trace) {
+				if (ChildrenList.isEmpty()) {
+					parameter = token;
+					newProcessor = true;
+					trace = false;
+					// TODO should be an arrayList of parameters if there are 2 inputs or more
+				}
+			} 
+			if (file) {
+				if (ChildrenList.isEmpty()) {
+					parameter = token;
+					System.out.println(token);
+					file = false;
+					newProcessor = true;
+				}
+			}
+			if (newProcessor) {
 				if (!opts.isEmpty()) {
 					System.out.print("getProcessor(" + name + ", " + opts + ", " + parameter + ")" + "\n");
 				}
 				else {
 					System.out.print("getProcessor(" + name + ", " + parameter + ")" + "\n");
 				}
-				
-				//1stprocessor = getProcessor(name, opts, secondprocessor.output());
 				opts.clear();
 				name = null;
 				parameter = null;
-				params = false;
-			}
-			if (trace) {
-				if (ChildrenList.isEmpty()) {
-					parameter = token;
-					// getProcessor("name", token);
-					// OR
-					// String parameter = token; //and pass it later to processor
-					// could be an arrayList of parameters if there are 2 inputs or more
-				}
-			} 
-			if (file) {
-				if (ChildrenList.isEmpty()) {
-					//Get filename into String and pass to processor?
-					parameter = token;
-					System.out.println(token);
-					file = false;
-				}
+				newProcessor = false;
 			}
 			
 		}
@@ -141,12 +137,12 @@ public class VisitorESQL implements OutputFormatVisitor {
 	}
 	
 	public void pop() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (?)
 
 	}
 
 	public String toOutputString() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (?)
 		return null;
 	}
 

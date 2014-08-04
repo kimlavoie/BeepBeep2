@@ -16,6 +16,8 @@
 <pipe_w_1-0_processor>	:= <0-1_processor> | <1-1_processor> | <2-1_processor>;
 <pipe_with_0-1>			:= <1-0_processor> | <1-1_processor>;
 
+<file_processor>		:= <input_file> | <out_to_file>;
+
 # 1 input 0 output processors
 <print>					:= PRINT <print_opt> <pipe_w_1-0_processor> |
 						   PRINT <print_opt> <trace> |
@@ -49,7 +51,7 @@
 
 
 # 0 input 1 output processors
-<yaml>					:= YAML <input_file>;
+<yaml>					:= YAML <file_processor>;
 
 <input_file>			:= INPUT FILE <filename> |  # todo: does input file always has to have yaml in front?
 						   INPUT FILE <filename> <pipe_with_0-1>;

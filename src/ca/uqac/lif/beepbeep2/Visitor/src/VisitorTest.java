@@ -19,15 +19,13 @@ public class VisitorTest implements OutputFormatVisitor {
 	
 	int size = 0;
 	Boolean options = false, file = false, after_name = false;
-	Boolean params = false, trace = false;
+	Boolean params = false, trace = false, newProcessor = false;
 	ArrayList<String> opts = new ArrayList<String>();
 	Map<String, String> map;
 	
 	public VisitorTest() {
 		map = new LinkedHashMap<String, String>();
 	}
-	
-	//TODO in visit(), how to create new processor when output is processor
 	
 	public void fillMap() {
 		String processor_non_terminal = null, processor_shortname = null;	
@@ -58,26 +56,34 @@ public class VisitorTest implements OutputFormatVisitor {
 		
 		List<ParseNode> ChildrenList = null;
 		ChildrenList = node.getChildren();
+		System.out.print("new token\n");
 		
 		if (map.containsKey(token)) { //is a new processor, so can get the name
+			System.out.print("getting the name\n");
 			name = CLASS_PATH + map.get(token).toLowerCase().replaceAll("\\s","");
-			System.out.println(name);		
+			System.out.println(name);	
 			after_name = true;
+			return;
 		}
-		if (after_name) {
+		
+		if (after_name) { //after getting the name, there are either options or no options. If no options, then parameters.
+			System.out.print("into after_name\n");
 			if (!ChildrenList.isEmpty()) {
-				if (token.contains("_opt")) { //children will be options
-					size = node.getSize();
+				if (token.contains("_opt")) {
+					System.out.print("there are options\n");
 					options = true;
+					size = node.getSize();
 				}
 				else {
 					params = true;
+					System.out.print("there are no options, go to parameters directly\n");
 				}
 				after_name = false;
 			}
 		}
 		//add options into arrayList if there are some to add
-		if (size >= 0 && options) {
+		if (options) {
+			System.out.print("into options\n");
 			if (ChildrenList.isEmpty()) { //build arrayList of String options, should later match All of, <num> of, At <num> per sec...
 				opts.add(token); //TODO build the options. Here they are separated by words.
 				System.out.println(token);
@@ -91,49 +97,54 @@ public class VisitorTest implements OutputFormatVisitor {
 		
 		
 		if (params) {
+			System.out.print("into params\n");
 			if (token.equals(".")) {
+				System.out.print("end of the ESQL string");
 				trace = false;
 				file = false;
 				params = false;
 			}
 			if (token.equals("<trace>")) {
+				System.out.print("param is a trace\n");
 				trace = true;
 			}
 			else if (token.equals("<filename>")) {
+				System.out.print("param is a filename\n");
 				file = true;
 			}
 			else if (token.contains("processor")) {
-				//TODO start building a new processor
+				System.out.print("param is a new processor\n");
 				parameter = token + ".output()";
+				params = false;
+				newProcessor = true;
+			}
+			if (trace) {
+				if (ChildrenList.isEmpty()) {
+					parameter = token;
+					newProcessor = true;
+					trace = false;
+					// could be an arrayList of parameters if there are 2 inputs or more
+				}
+			} 
+			if (file) {
+				if (ChildrenList.isEmpty()) {
+					parameter = token;
+					System.out.println(token);
+					file = false;
+					newProcessor = true;
+				}
+			}
+			if (newProcessor) {
 				if (!opts.isEmpty()) {
 					System.out.print("getProcessor(" + name + ", " + opts + ", " + parameter + ")" + "\n");
 				}
 				else {
 					System.out.print("getProcessor(" + name + ", " + parameter + ")" + "\n");
 				}
-				
-				//1stprocessor = getProcessor(name, opts, secondprocessor.output());
 				opts.clear();
 				name = null;
 				parameter = null;
-				params = false;
-			}
-			if (trace) {
-				if (ChildrenList.isEmpty()) {
-					parameter = token;
-					// getProcessor("name", token);
-					// OR
-					// String parameter = token; //and pass it later to processor
-					// could be an arrayList of parameters if there are 2 inputs or more
-				}
-			} 
-			if (file) {
-				if (ChildrenList.isEmpty()) {
-					//Get filename into String and pass to processor?
-					parameter = token;
-					System.out.println(token);
-					file = false;
-				}
+				newProcessor = false;
 			}
 			
 		}
