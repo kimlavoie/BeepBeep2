@@ -1,0 +1,80 @@
+#
+# BNF grammar for ESQL language
+# for BeepBeep2, a complex event
+# processing program (06-2014)
+#
+
+<exp_start>				:= <N-0_processor> .;
+
+<N-0_processor>			:= <1-0_processor>;
+
+<1-0_processor>			:= <print> | <stdout> | <stderr> | <out_to_file>;
+<0-1_processor>			:= <yaml> | <input_file>;
+<1-1_processor>			:= <constant>;
+<2-1_processor>			:= <multiply>;
+
+<pipe_w_1-0_processor>	:= <0-1_processor> | <1-1_processor> | <2-1_processor>;
+<pipe_with_0-1>			:= <1-0_processor> | <1-1_processor>;
+
+# 1 input 0 output processors
+<print>					:= PRINT <print_opt> <pipe_w_1-0_processor> |
+						   PRINT <print_opt> <trace> |
+						   PRINT <pipe_w_1-0_processor> |
+						   PRINT <trace>;
+
+<stdout>				:= STDOUT <print_opt> <pipe_w_1-0_processor> |
+						   STDOUT <print_opt> <trace> |
+						   STDOUT <pipe_w_1-0_processor> |
+						   STDOUT <trace>;
+
+<stderr>				:= STDERR <print_opt> <pipe_w_1-0_processor> |
+						   STDERR <print_opt> <trace> |
+						   STDERR <pipe_w_1-0_processor> |
+						   STDERR <trace>;
+
+<print_opt>				:= AT <number> PER SECOND ALL OF | 
+						   AT <number> PER SECOND <number> OF | 
+						   AT <number> PER SECOND | 
+						   <number> OF |
+						   ON KEY <key> ALL OF |
+						   ON KEY <key> <number> OF |
+						   ON KEY <key> ;
+
+<out_to_file>			:= OUTPUT TO FILE <filename> <out_opt> <pipe_w_1-0_processor> |
+						   OUTPUT TO FILE <filename> <out_opt> <trace> |
+						   OUTPUT TO FILE <filename> <pipe_w_1-0_processor> |
+						   OUTPUT TO FILE <filename> <trace>;
+
+<out_opt>				:= <number> OF | ALL OF;
+
+
+# 0 input 1 output processors
+<yaml>					:= YAML <input_file>;
+
+<input_file>			:= INPUT FILE <filename> |  # todo: does input file always has to have yaml in front?
+						   INPUT FILE <filename> <pipe_with_0-1>;
+
+
+# COPY and MULTIPLY are arbitrary, for the sake of the tests
+# 1 input 1 output processor
+<constant>				:= COPY <trace>; 
+
+# 2 input 1 output processor
+<multiply>				:= MULTIPLY <trace> BY <trace>;
+
+# 0 input 0 output "processor"
+<trace>					:= <string> | <yaml_exp>;
+
+
+#constant terminals
+<filename>				:= <string>; # todo
+<string>				:= ^"[^"]*";
+<yaml_exp>				:= ^"[\w\s\d{}:]+"; # todo
+
+<number>				:= ^[\d]*;
+
+<key>					:= ^"[.]" | ^"[fF][\d]" | 
+						   "ENTER" | "CTRL" | "ALT" | "SHIFT" | 
+						   "TAB" | "ESC" | "CAPS" | "BACK_S" | "DEL" |
+						   "HOME" | "END" | "PAGE_UP" | "PAGE_DOWN" | "NUM_LOCK" |
+						   "DOWN_ARROW" | "UP_ARROW" | "LEFT_ARROW" | "RIGHT_ARROW";

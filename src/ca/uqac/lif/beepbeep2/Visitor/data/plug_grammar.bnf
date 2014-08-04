@@ -1,0 +1,15 @@
+#
+# Grammar for ESQL "plugging to grammar"
+# 
+
+<expression>				:= DEFINE ( <non_terminal> ) AS A ( <grammar_non_terminal> ) , 
+							   PARSE AS ( <non_terminal> ) <proc_name> ( <non_terminal> ) , 
+							   REWRITE AS ( <var> ) <grammar_string> ( <var> ) .;
+
+<grammar_non_terminal>		:= <non_terminal>; 	#already existing non-terminal in grammar
+<non_terminal>				:= ^[\w\s:-_]+;
+
+<grammar_string>			:= <proc_name>; 	#already existing short processor name in grammar
+<proc_name>					:= ^[^(]+; 			#short name of the processor
+
+<var>						:= ^[a-zA-Z]+;
