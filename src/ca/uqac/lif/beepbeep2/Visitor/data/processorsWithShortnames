@@ -1,12 +1,14 @@
 <print>
-PRINT
+print
 <stdout>
-STDOUT
+stdout
 <stderr>
-STDERR
+stderr
 <out_to_file>
-OUTPUT TO FILE
+outputtofile
 <input_file>
-INPUT FILE
+inputfile
 <yaml>
-YAML
+yaml
+<multiply>
+multiply

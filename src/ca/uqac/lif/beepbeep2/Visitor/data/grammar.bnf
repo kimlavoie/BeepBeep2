@@ -14,7 +14,8 @@
 <2-1_processor>			:= <multiply>;
 
 <pipe_w_1-0_processor>	:= <0-1_processor> | <1-1_processor> | <2-1_processor>;
-<pipe_with_0-1>			:= <1-0_processor> | <1-1_processor>;
+<pipe_w_0-1_processor>	:= <1-0_processor> | <1-1_processor>;
+<pipe_w_2-1_processor>	:= <0-1_processor> | <1-1_processor> | <2-1_processor>;
 
 <file_processor>		:= <input_file> | <out_to_file>;
 
@@ -54,7 +55,7 @@
 <yaml>					:= YAML <file_processor>;
 
 <input_file>			:= INPUT FILE <filename> |  # todo: does input file always has to have yaml in front?
-						   INPUT FILE <filename> <pipe_with_0-1>;
+						   INPUT FILE <filename> <pipe_w_0-1_processor>;
 
 
 # COPY and MULTIPLY are arbitrary, for the sake of the tests
@@ -62,10 +63,13 @@
 <constant>				:= COPY <trace>; 
 
 # 2 input 1 output processor
-<multiply>				:= MULTIPLY <trace> BY <trace>;
+<multiply>				:= MULTIPLY <trace> BY <trace> | 
+						   MULTIPLY <pipe_w_2-1_processor> BY <trace> |
+						   MULTIPLY <trace> BY <pipe_w_2-1_processor> |
+						   MULTIPLY <pipe_w_2-1_processor> BY <pipe_w_2-1_processor>;
 
 # 0 input 0 output "processor"
-<trace>					:= <string> | <yaml_exp>;
+<trace>					:= <string> | <yaml_exp> | <number>;
 
 
 #constant terminals

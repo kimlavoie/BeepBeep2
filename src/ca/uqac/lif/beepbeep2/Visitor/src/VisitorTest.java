@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import ca.uqac.lif.bullwinkle.ParseNode;
 import ca.uqac.lif.bullwinkle.output.OutputFormatVisitor;
@@ -12,25 +13,32 @@ import ca.uqac.lif.bullwinkle.output.OutputFormatVisitor;
 
 public class VisitorTest implements OutputFormatVisitor {
 
-	//need one visit method which can get all the information for all the different existing processors
-	//how to do that? TODO
-	
-	String name, parameter;
+	final int MAX_PARAMETERS = 2;
+	String name;
 	
 	int size = 0;
 	Boolean options = false, file = false, after_name = false;
 	Boolean params = false, trace = false, newProcessor = false;
-	ArrayList<String> opts = new ArrayList<String>();
+	Boolean binary_processor = false;
+	
+	ArrayList<String> opts;
+	ArrayList<Object> inputs;
 	Map<String, String> map;
+	Stack<ProcessorData> processorStack;
+	Stack<String> ProcessorInputsStack;
 	
 	public VisitorTest() {
 		map = new LinkedHashMap<String, String>();
+		opts = new ArrayList<String>();
+		inputs = new ArrayList<Object>();
+		processorStack = new Stack<ProcessorData>();
+		ProcessorInputsStack = new Stack<String>();
 	}
 	
 	public void fillMap() {
 		String processor_non_terminal = null, processor_shortname = null;	
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader("C:/Users/Gabrielle/github/BeepBeep2/Grammar_Beepbeep2/processorsWithShortnames"));
+			BufferedReader reader = new BufferedReader(new FileReader("data/processorsWithShortnames"));
 			while (true) {
 				processor_non_terminal = reader.readLine();
 				if (processor_non_terminal == null) 
@@ -51,12 +59,15 @@ public class VisitorTest implements OutputFormatVisitor {
 		
 		String token = node.getToken();
 		
-		//later : at every new grammar addition, put new <shortname> and SHORTNAME in map
-		//getProcessor() from processorFactory ?		
+		//later : at every new grammar addition, put new <shortname> and SHORTNAME in map		
 		
 		List<ParseNode> ChildrenList = null;
 		ChildrenList = node.getChildren();
-		System.out.print("new token\n");
+		System.out.print("new token: "+ token + "\n");
+		
+		if (token.equals("<2-1_processor>") || token.equals("<2-0_processor>")) {
+			binary_processor = true;
+		}
 		
 		if (map.containsKey(token)) { //is a new processor, so can get the name
 			System.out.print("getting the name\n");
@@ -66,7 +77,7 @@ public class VisitorTest implements OutputFormatVisitor {
 			return;
 		}
 		
-		if (after_name) { //after getting the name, there are either options or no options. If no options, then parameters.
+		if (after_name) { 
 			System.out.print("into after_name\n");
 			if (!ChildrenList.isEmpty()) {
 				if (token.contains("_opt")) {
@@ -81,76 +92,117 @@ public class VisitorTest implements OutputFormatVisitor {
 				after_name = false;
 			}
 		}
-		//add options into arrayList if there are some to add
+		
 		if (options) {
 			System.out.print("into options\n");
-			if (ChildrenList.isEmpty()) { //build arrayList of String options, should later match All of, <num> of, At <num> per sec...
-				opts.add(token); //TODO build the options. Here they are separated by words.
+			if (ChildrenList.isEmpty()) { 
+				opts.add(token); 
 				System.out.println(token);
 			}
 			size--;
 			if (size == 0) { 
 				options = false;
-				params = true; //after options, there are the parameters (event, filename or processor)
+				params = true;
 			}
 		}
 		
 		
-		if (params) {
+		if (params) { 
 			System.out.print("into params\n");
-			if (token.equals(".")) {
-				System.out.print("end of the ESQL string");
-				trace = false;
-				file = false;
-				params = false;
-			}
+			
 			if (token.equals("<trace>")) {
 				System.out.print("param is a trace\n");
 				trace = true;
+				return;
 			}
 			else if (token.equals("<filename>")) {
 				System.out.print("param is a filename\n");
 				file = true;
+				return;
 			}
 			else if (token.contains("processor")) {
 				System.out.print("param is a new processor\n");
-				parameter = token + ".output()";
+				inputs.add("output()");
+				
 				params = false;
 				newProcessor = true;
 			}
 			if (trace) {
 				if (ChildrenList.isEmpty()) {
-					parameter = token;
-					newProcessor = true;
+					inputs.add(token);
+					System.out.print(token + " added into inputs trace\n");
+					if (!binary_processor || (binary_processor && inputs.size() >= MAX_PARAMETERS)) {
+						newProcessor = true;
+						params = false;
+					}
 					trace = false;
-					// could be an arrayList of parameters if there are 2 inputs or more
 				}
 			} 
-			if (file) {
+			else if (file) {
 				if (ChildrenList.isEmpty()) {
-					parameter = token;
-					System.out.println(token);
+					inputs.add(token);
+					System.out.print(token + " added into inputs\n");
+					if (!binary_processor || (binary_processor && inputs.size() >= MAX_PARAMETERS)) {
+						newProcessor = true;
+						params = false;
+					}
 					file = false;
-					newProcessor = true;
 				}
+				
 			}
-			if (newProcessor) {
-				if (!opts.isEmpty()) {
-					System.out.print("getProcessor(" + name + ", " + opts + ", " + parameter + ")" + "\n");
-				}
-				else {
-					System.out.print("getProcessor(" + name + ", " + parameter + ")" + "\n");
-				}
-				opts.clear();
-				name = null;
-				parameter = null;
-				newProcessor = false;
-			}
-			
 		}
-		
+			
+		if (newProcessor) {
+			System.out.print("output() added into inputs\n");
+			
+			if (!binary_processor || (binary_processor && inputs.size() >= MAX_PARAMETERS)) {
+				ProcessorData processor = new ProcessorData(name, opts, inputs);
+				processorStack.push(processor);
+				
+				System.out.print("a new processorData was added to stack\n");
+				System.out.print(name + opts + inputs + "\n");
+				
+				inputs.clear(); //TODO how to keep the inputs and options in processorStack after clear() ?
+				if(!opts.isEmpty())
+					opts.clear();
+				
+				name = null;
+			}
+			newProcessor = false;
+		}
+	
+		if (token.equals(".")) {
+			System.out.print("end of the ESQL string\n\n");
+			while (!processorStack.isEmpty()) {
+				ProcessorData processor = processorStack.pop();
+				inputs = processor.getInputs();
+				if (inputs.contains("output()")) {
+					int index = 0;
+					for (Object input : inputs) {
+						if (input.equals("output()")) {
+							inputs.set(index, ProcessorInputsStack.pop());
+						}
+						index++;
+					}
+				}
+				System.out.print("getProcessor(" + processor.getName() + ", " + processor.getOptions() + ", " + processor.getInputs() + ")\n"); //processor = getProcessor()
+				ProcessorInputsStack.push("" + processor.getName()); //push(processor)
+				
+				/*
+				ProcessorData processor = processorStack.pop();
+				System.out.print(processor.getName() + processor.getOptions() + processor.getInputs() + "\n\n");
+				*/
+			}
+			//System.out.print("getProcessor(" + name + ", " + opts + ", " + inputs + ")" + "\n");
+		}
+			
 	}
 	
+	/*
+	 * look at stack.top(). look at inputs. if input is instance of ProcessorData, go to this processorData
+	 * until no input is processorData. Then, call processors recursively TODO somehow* 
+	 * with input as processor.output
+	*/
 	public void pop() {
 		// TODO Auto-generated method stub
 

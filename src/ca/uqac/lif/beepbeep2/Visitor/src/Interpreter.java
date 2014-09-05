@@ -10,24 +10,19 @@ public class Interpreter {
 
 	public static void main(String[] args) {
 		String filename = "data/grammar.bnf";
-		String expression = "PRINT 2 OF YAML INPUT FILE \"filename.txt\" .";//"DEFINE (MULBY) AS A (BINARY_PROC), PARSE AS (X:TRACE) MULTIPLY (Y:TRACE), REWRITE AS (X) * (Y).";//"OUTPUT TO FILE \"filename.txt\" ALL OF INPUT FILE \"filename.txt\""; 
+		String expression = "PRINT 2 OF MULTIPLY MULTIPLY 1 BY 2 BY MULTIPLY 3 BY 4 .";//"PRINT 2 OF YAML INPUT FILE \"filename.txt\" .";//"DEFINE (MULBY) AS A (BINARY_PROC), PARSE AS (X:TRACE) MULTIPLY (Y:TRACE), REWRITE AS (X) * (Y).";//"OUTPUT TO FILE \"filename.txt\" ALL OF INPUT FILE \"filename.txt\""; 
 		try
 	    {
 	      BnfParser parser = new BnfParser(new File(filename));
 	      ParseNode node = parser.parse(expression);
-	      //GraphvizVisitor visitor = new GraphvizVisitor();
 	      
 	      VisitorTest visitorTest = new VisitorTest();
 	      visitorTest.fillMap();
 	      VisitorESQL visitorESQL = new VisitorESQL();
 	      visitorESQL.fillMap();
-	      //node.prefixAccept(visitorTest);
-	      node.prefixAccept(visitorESQL);
-	      //System.out.println(visitorESQL.map);
-	      /*
-	      node.prefixAccept(visitor);
-	      System.out.println(visitor.toOutputString());
-	      */
+	      node.prefixAccept(visitorTest);
+	      //node.prefixAccept(visitorESQL);
+
 	    }
 	    catch (Exception e)
 	    {
