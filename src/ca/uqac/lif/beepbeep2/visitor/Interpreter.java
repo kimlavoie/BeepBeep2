@@ -1,3 +1,5 @@
+package ca.uqac.lif.beepbeep2.visitor;
+
 import java.io.File;
 
 import ca.uqac.lif.bullwinkle.BnfParser;

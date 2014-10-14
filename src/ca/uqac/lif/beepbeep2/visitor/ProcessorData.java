@@ -1,3 +1,5 @@
+package ca.uqac.lif.beepbeep2.visitor;
+
 import java.util.ArrayList;
 
 

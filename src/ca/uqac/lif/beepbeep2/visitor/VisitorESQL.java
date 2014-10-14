@@ -1,3 +1,5 @@
+package ca.uqac.lif.beepbeep2.visitor;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
