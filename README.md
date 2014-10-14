@@ -11,6 +11,8 @@ You also have to install Apache Ant. To run the test, simply type:
 
 `ant`
 
+Note that you need the YAML libraries for the languages to run the test.
+
 ### Status:
 For now, the system can load processor classes reflectively and call external scripts. The support for external scripts is python, ruby and perly only. Other executables might works, but it is not guaranteed. Look at scripts in the external folder to see how to construct them.
 
