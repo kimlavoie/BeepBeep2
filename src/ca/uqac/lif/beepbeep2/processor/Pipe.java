@@ -1,10 +1,9 @@
 package ca.uqac.lif.beepbeep2.processor;
 
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Pipe{
-  private Queue<String> fifo = new LinkedList<String>();
+  private ArrayBlockingQueue<String> fifo = new ArrayBlockingQueue<String>(1000);
   final int MAX_BUFFERING_SIZE = 1000;
   final int SLEEPING_TIME = 10;
 
@@ -14,7 +13,7 @@ public class Pipe{
   }
 
   public boolean canWrite(){
-    if(fifo.size() > MAX_BUFFERING_SIZE) return false;
+    if(!fifo.isEmpty()) return false;
     else return true;
   }
 
@@ -37,6 +36,6 @@ public class Pipe{
     }catch(Exception e){ 
       e.printStackTrace();
     }
-    fifo.offer(event);
+    fifo.add(event);
   }
 }

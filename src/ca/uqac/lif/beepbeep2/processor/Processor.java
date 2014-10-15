@@ -3,8 +3,10 @@ package ca.uqac.lif.beepbeep2.processor;
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class Processor{  
+public abstract class Processor implements Runnable{  
 
+  protected Thread t;
+	
   protected List<Pipe> inputStreams;
   protected List<Pipe> outputStreams;
 
@@ -23,6 +25,13 @@ public abstract class Processor{
     outputStreams = new ArrayList<Pipe>();
     inputStreams.add(input);
     outputStreams.add(output);
+  }
+  
+  public void start() {
+	  if (t==null) {
+		  t = new Thread(this, "Proc");
+		  t.start();
+	  }
   }
 
   public void write(String event){
