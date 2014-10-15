@@ -84,16 +84,29 @@ public class ProcessorFactory{
 
   // For test purpose
   public static void main(String[] args){
-    ProcessorFactory processorFactory = new ProcessorFactory();
-    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
-    Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
-    Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
-    Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
-    Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
-    processor.run();
-    processor2.run("event: {x: 0}");
-    processor3.run("event: {x: 0}");
-    processor4.run("event: {x: 8}");
-    processor5.run();
+    //ProcessorFactory processorFactory = new ProcessorFactory();
+    //Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+    //Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
+    //Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
+    //Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
+    //Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
+    //processor.run();
+    //processor2.run("event: {x: 0}");
+    //processor3.run("event: {x: 0}");
+    //processor4.run("event: {x: 8}");
+    //processor5.run();
+	  
+	  Pipe passPrint= new Pipe();
+	  Pipe textPass = new Pipe();
+	  
+	  PassThroughProcessor passProc = new PassThroughProcessor(textPass, passPrint);
+	  PrintProcessor printProc = new PrintProcessor(passPrint, null);
+	  TextProcessor textProc = new TextProcessor(null, textPass);
+	  textProc.start();
+	  passProc.start();
+	  printProc.start();
+	  
+	  
+	  
   }
 }

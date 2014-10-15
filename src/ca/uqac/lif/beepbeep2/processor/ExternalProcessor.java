@@ -113,6 +113,12 @@ public class ExternalProcessor extends Processor{
     p.destroy();
   }
 
+@Override
+public void run() {
+	// TODO Auto-generated method stub
+	
+}
+
 // For testing purposes
 /*
   public static void main(String args[]) throws Exception{

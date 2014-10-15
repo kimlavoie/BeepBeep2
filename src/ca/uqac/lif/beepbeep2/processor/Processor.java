@@ -55,5 +55,5 @@ public abstract class Processor implements Runnable{
 
   public void cleanup(){}
 
-  public abstract void run(String... events);
+  public abstract void run();
 }
