@@ -96,7 +96,7 @@ public class ProcessorFactory{
     //processor4.run("event: {x: 8}");
     //processor5.run();
 	  
-	  Pipe passPrint= new Pipe();
+	  /*Pipe passPrint= new Pipe();
 	  Pipe textPass = new Pipe();
 	  
 	  PassThroughProcessor passProc = new PassThroughProcessor(textPass, passPrint);
@@ -104,9 +104,30 @@ public class ProcessorFactory{
 	  TextProcessor textProc = new TextProcessor(null, textPass);
 	  textProc.start();
 	  passProc.start();
+	  printProc.start();*/
+	  
+	  Pipe plusPrint = new Pipe();
+	  Pipe text1Plus = new Pipe();
+	  Pipe text2Plus = new Pipe();
+	  Pipe text3Plus = new Pipe();
+	  List<Pipe> plusInputs = new ArrayList<Pipe>();
+	  plusInputs.add(text1Plus);
+	  plusInputs.add(text2Plus);
+	  plusInputs.add(text3Plus);
+	  List<Pipe> plusOutputs = new ArrayList<Pipe>();
+	  plusOutputs.add(plusPrint);
+	  
+	  TextProcessor text1Proc = new TextProcessor(null, text1Plus);
+	  TextProcessor text2Proc = new TextProcessor(null, text2Plus);
+	  TextProcessor text3Proc = new TextProcessor(null, text3Plus);
+	  PlusProcessor plusProc = new PlusProcessor(plusInputs, plusOutputs);
+	  PrintProcessor printProc = new PrintProcessor(plusPrint,null);
+	  
+	  text1Proc.start();
+	  text2Proc.start();
+	  text3Proc.start();
+	  plusProc.start();
 	  printProc.start();
-	  
-	  
 	  
   }
 }

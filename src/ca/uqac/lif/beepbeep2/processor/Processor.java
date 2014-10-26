@@ -50,7 +50,7 @@ public abstract class Processor implements Runnable{
     for(Pipe pipe: inputStreams){
       events.add(pipe.read());
     }
-    return (String[]) events.toArray();
+    return events.toArray(new String[events.size()]);
   }
 
   public void cleanup(){}

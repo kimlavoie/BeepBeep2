@@ -13,7 +13,7 @@ public class TextProcessor extends Processor {
 		// TODO Auto-generated method stub
 		while(true) {
 			if (!outputStreams.isEmpty())
-				write("Text");
+				write("1");
 		}
 		
 	}
