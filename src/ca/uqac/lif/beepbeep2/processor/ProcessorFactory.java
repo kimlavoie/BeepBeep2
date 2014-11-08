@@ -123,14 +123,14 @@ public class ProcessorFactory{
 	  text2Proc.start();
 	  //text3Proc.start();
 	  plusProc.start();
-	  printProc.start();*/
-	  
-	  Pipe selectPrint = new Pipe();
-	  MySQLSelectProcessor selectProc = new MySQLSelectProcessor(null, selectPrint);
-	  PrintProcessor printProc = new PrintProcessor(selectPrint, null);
-	  
-	  selectProc.start();
 	  printProc.start();
+	  
+	  //Pipe selectPrint = new Pipe();
+	  //MySQLSelectProcessor selectProc = new MySQLSelectProcessor(null, selectPrint);
+	  //PrintProcessor printProc = new PrintProcessor(selectPrint, null);
+	  
+	  //selectProc.start();
+	  //printProc.start();
 */	  
   }
 }

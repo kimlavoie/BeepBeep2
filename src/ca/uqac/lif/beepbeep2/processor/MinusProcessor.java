@@ -4,15 +4,7 @@ import java.util.List;
 
 public class MinusProcessor extends Processor {
 
-	MinusProcessor(Pipe input, Pipe output)
-	{
-		super(input,output);
-		
-	}
 	
-	MinusProcessor(List<Pipe> inputs, List<Pipe> outputs){
-	    super(inputs,outputs);
-	  }
 	
 	@Override
 	public void run() {

@@ -4,15 +4,6 @@ import java.util.List;
 
 public class MultiplicationProcessor extends Processor {
 
-	MultiplicationProcessor(Pipe input, Pipe output)
-	{
-		super(input,output);
-		
-	}
-	
-	public MultiplicationProcessor(List<Pipe> inputs, List<Pipe> outputs){
-	    super(inputs,outputs);
-	  }
 	
 	@Override
 	public void run() {

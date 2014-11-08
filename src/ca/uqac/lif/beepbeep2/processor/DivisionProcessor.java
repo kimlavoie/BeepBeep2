@@ -4,15 +4,7 @@ import java.util.List;
 
 public class DivisionProcessor extends Processor {
 
-	DivisionProcessor(Pipe input, Pipe output)
-	{
-		super(input,output);
-		
-	}
 	
-	DivisionProcessor(List<Pipe> inputs, List<Pipe> outputs){
-	    super(inputs,outputs);
-	  }
 	
 	@Override
 	public void run() {

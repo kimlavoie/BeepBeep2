@@ -24,17 +24,8 @@ public class MySQLSelectProcessor extends Processor {
 	private String orderby;
 	private HashMap<String,String> columns = new HashMap<String,String>();
 
+
 	public MySQLSelectProcessor() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public MySQLSelectProcessor(List<Pipe> inputs, List<Pipe> outputs) {
-		super(inputs, outputs);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MySQLSelectProcessor(Pipe input, Pipe output) {
-		super(input, output);
 		// TODO Auto-generated constructor stub
 		
 		try{
@@ -56,7 +47,7 @@ public class MySQLSelectProcessor extends Processor {
 		
 		try{
 			url = "jdbc:mysql://"+ip+"/"+database;
-			//url = "jdbc:mysql://104.131.187.142/omnimed";
+			
 			Class.forName(driver).newInstance();
 			conn = DriverManager.getConnection(url, user, pass);
 		}
