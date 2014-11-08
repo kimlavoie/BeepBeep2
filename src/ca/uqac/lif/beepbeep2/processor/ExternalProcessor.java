@@ -20,14 +20,6 @@ public class ExternalProcessor extends Processor{
     String directory = "external/";
     String program;
 
-  public ExternalProcessor(String program) throws Exception{
-    this.program = program;
-    specificInit();
-    p = pb.redirectErrorStream(true).start(); 
-    writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-    reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-  }
-
   public void specificInit(){
     String ext = program.split("\\.")[1];
     if(ext.equals("py")) pythonInit();
@@ -76,21 +68,28 @@ public class ExternalProcessor extends Processor{
     pb = new ProcessBuilder(directory + program);
   }
 
-  public void run(String... events){
+  public void run(){
     /**
       Overriden from Processor
       Send event to program stdin, then listen for response on stdout
     */
-    String event = events[0];
-    try{
-      writer.write(event + "\n");
-      writer.flush();
-      String response = readBuffer();
-      System.out.print("ExternalProcessor response for " + program + ":\n" + response);
-    }catch(Exception e){
-      e.printStackTrace();
-      System.exit(1);
-    }
+      try{
+        this.program = options.get("program");
+        specificInit();
+        p = pb.redirectErrorStream(true).start(); 
+        writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+        reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+  
+        //TODO read from input instead
+        String event = "event: {x: 0}";
+        writer.write(event + "\n");
+        writer.flush();
+        String response = readBuffer();
+        System.out.print("ExternalProcessor response for " + program + ":\n" + response);
+      }catch(Exception e){
+        e.printStackTrace();
+        System.exit(1);
+      }
   }
 
   private String readBuffer() throws Exception{
@@ -113,11 +112,6 @@ public class ExternalProcessor extends Processor{
     p.destroy();
   }
 
-@Override
-public void run() {
-	// TODO Auto-generated method stub
-	
-}
 
 // For testing purposes
 /*

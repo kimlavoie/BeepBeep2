@@ -2,6 +2,8 @@ package ca.uqac.lif.beepbeep2.processor;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public abstract class Processor implements Runnable{  
 
@@ -9,10 +11,12 @@ public abstract class Processor implements Runnable{
 	
   protected List<Pipe> inputStreams;
   protected List<Pipe> outputStreams;
+  protected Map<String, String> options;
 
   public Processor(){
     inputStreams = new ArrayList<Pipe>();
     outputStreams = new ArrayList<Pipe>();
+    options = new HashMap<String, String>();
   }
 
   public Processor(List<Pipe> inputs, List<Pipe> outputs){
@@ -25,6 +29,30 @@ public abstract class Processor implements Runnable{
     outputStreams = new ArrayList<Pipe>();
     inputStreams.add(input);
     outputStreams.add(output);
+  }
+
+  public void setInputs(List<Pipe> inputs){
+    this.inputStreams = inputs;
+  }
+
+  public void setOutputs(List<Pipe> outputs){
+    this.outputStreams = outputs;
+  }
+
+  public void setOptions(Map<String, String> options){
+    this.options = options;
+  }
+
+  public void addInput(Pipe input){
+    inputStreams.add(input);
+  }
+
+  public void addOutput(Pipe output){
+    outputStreams.add(output);
+  }
+
+  public void addOption(String key, String value){
+    options.put(key, value);
   }
   
   public void start() {

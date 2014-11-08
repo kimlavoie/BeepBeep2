@@ -4,6 +4,8 @@ import ca.uqac.lif.beepbeep2.processor.Processor;
 import java.util.List;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.net.URLClassLoader;
 import java.net.URL;
 import java.lang.reflect.Method;
@@ -17,7 +19,7 @@ public class ProcessorFactory{
 
   public ProcessorFactory(){
     try{
-      URL[] urls = createURLs();
+     URL[] urls = createURLs();
       createClassLoader(urls);
     }catch(ExternalDirectoryNotFoundException e){
       System.err.println("\"" + externalDir + "\" directory not found.");
@@ -45,33 +47,13 @@ public class ProcessorFactory{
 
   public Processor getProcessor(String className){
     /**
-      Generate a processor from the classname by calling the constructor without parameters
-    */
-    try{
-      Class cl = classLoader.loadClass(className);
-      return (Processor) cl.newInstance();
-    }catch(Exception e){
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return null;
-  }
-
-  public Processor getProcessor(String className, String... params){
-    /**
       Generate a processor from the classname, calling the constructor with the same amounts of String parameters passed
     */
     try{
-      Object[] parameters = params;
       Class cl = classLoader.loadClass(className);
-      Constructor cons = null;
-      for(Constructor constructor: cl.getConstructors()){
-        if(constructor.getParameterTypes().length == parameters.length){
-          cons = constructor; 
-        }
-      }
+      Constructor cons = cl.getConstructors()[0];
       if(cons != null){
-        return (Processor) cons.newInstance(parameters);
+        return (Processor) cons.newInstance();
       }else{
         throw new Exception("Invalid constructor");
       }
@@ -84,19 +66,32 @@ public class ProcessorFactory{
 
   // For test purpose
   public static void main(String[] args){
-    //ProcessorFactory processorFactory = new ProcessorFactory();
-    //Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
-    //Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
-    //Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
-    //Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
-    //Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
-    //processor.run();
-    //processor2.run("event: {x: 0}");
-    //processor3.run("event: {x: 0}");
-    //processor4.run("event: {x: 8}");
-    //processor5.run();
-	  
-	  /*Pipe passPrint= new Pipe();
+    ProcessorFactory processorFactory = new ProcessorFactory();
+    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+    processor.addOption("test", "success");
+    Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor");
+    processor2.addOption("program", "test.py");
+
+    processor.start();
+    processor2.start();
+    try{
+      Thread.sleep(2000);
+    }catch(Exception e){}
+
+    Processor textProc = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.TextProcessor");
+    textProc.addOption("value", "hello");
+    Processor printProc = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.PrintProcessor");
+    Pipe pipe = new Pipe();
+    printProc.addInput(pipe);
+    textProc.addOutput(pipe);
+
+    textProc.start();
+    printProc.start();
+    try{
+      Thread.sleep(2000);
+    }catch(Exception e){}
+/*	  
+	  Pipe passPrint= new Pipe();
 	  Pipe textPass = new Pipe();
 	  
 	  PassThroughProcessor passProc = new PassThroughProcessor(textPass, passPrint);
@@ -104,7 +99,7 @@ public class ProcessorFactory{
 	  TextProcessor textProc = new TextProcessor(null, textPass);
 	  textProc.start();
 	  passProc.start();
-	  printProc.start();*/
+	  printProc.start();
 	  
 	  /*
 	  //Pipe plusPrint = new Pipe();
@@ -136,6 +131,6 @@ public class ProcessorFactory{
 	  
 	  selectProc.start();
 	  printProc.start();
-	  
+*/	  
   }
 }
