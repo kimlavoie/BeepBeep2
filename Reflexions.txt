@@ -1,0 +1,48 @@
+Idée:
+    Uniformiser la définition des processeurs. Il serait particulièrement intéressant que même les processeurs natifs soient importés par
+    la définition de processeurs. Ils pourraient être importés de façon "hardcodé", ou bien dans un fichier d'initialisation.
+
+Exemples de définition:
+    MAKE "PrintProcessor" FROM "PRINT [ AT <delay> PER SECOND | ON KEY <key> ] [ <quantity> OF ] <input>" .
+    
+    Les options sont données aux processeurs grâce à un Map<String,Processor>, où la clé est le mot entre < > et la valeur est un string.
+    Ce qui est entre [] est optionnel. Le caractère '|' indique l'un ou l'autre, mais pas les deux et doit être entre [].
+    <input> permet de déterminer les processeurs à envoyer en entrées.
+    
+    MAKE "MultiplyProcessor" FROM "MULTIPLY <input> BY <input>" .
+    
+    Plusieurs entrées peuvent être fournies au processeur. Les entrées sont fournies via un Array[Processor], dans l'ordre d'apparition.
+    
+Grammaire principale:
+    <statement>             := <processor> .   |    <builder> .
+    <builder>               := MAKE <string> FROM <string>
+    <processor>             := <number> | <string> | <customProcessor>
+    <string>                := ^"[^"]*"
+    <number>                := ^[\d]*;  // TODO: accepter float?
+    
+    #Généré
+    <customProcessor>       := <PrintProcessor> | <MultiplyProcessor> | ...
+    
+    <PrintProcessor>        := PRINT <processor> | 
+                                PRINT AT <number> BY SECOND <processor> | 
+                                PRINT AT <number> BY SECOND <number> OF <processor> |
+                                PRINT ON KEY <string> <processor> |
+                                PRINT ON KEY <string> <number> OF <processor>
+                                PRINT <number> OF <processor>
+                               
+    <MultiplyProcessor>     := MULTIPLY <processor> BY <processor>
+    
+    ...
+    
+    Note: La grammaire pourrait être générée au besoin à partir d'une classe qui conserverait les processeurs et leur définition dans un Map.
+    
+Grammaire builder:
+    <start>                 := <word> <expression>
+    <expression>            := <word> <expression> | <optional> <expression> | <token> <expression> | (<expression>) | ''
+    <word>                  := [A-Z]*
+    <optional>              := [<expression>]
+    <token>                 := '<' <string> '>'
+    <choice>                := <expression> '|' <expression>
+    
+    Note: Il s'agit d'une meta-grammaire. À partir de cette grammaire, on génèrerait les parties à générer dans la grammaire principale.
+    
