@@ -1,0 +1,8 @@
+ip:104.131.187.142
+database:omnimed
+user:simon
+pass:POxSvEdobumET2i0iicA
+table:animals
+orderby:id
+column:id
+column:name
