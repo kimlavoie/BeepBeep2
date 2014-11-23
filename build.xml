@@ -22,11 +22,20 @@
     </java>
   </target>
 
-  <target name="interpreter">
+  <target name="interpreter" depends="compile">
     <java classpath="build/classes" classname="ca.uqac.lif.beepbeep2.visitor.Interpreter" >
       <classpath refid="lib" />
     </java>
   </target>
+
+   <target name="parserTests" depends="compile">
+    <java classpath="build/classes" classname="ca.uqac.lif.beepbeep2.parser.BlueprintParser" >
+      <classpath refid="lib" />
+    </java>
+  </target>
+
+
+  
 
   <target name="clean">
     <delete dir="build" />
