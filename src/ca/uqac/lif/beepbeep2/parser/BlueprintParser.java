@@ -1,36 +1,36 @@
 package ca.uqac.lif.beepbeep2.parser;
 
 import ca.uqac.lif.beepbeep2.parser.Tree;
+import ca.uqac.lif.beepbeep2.parser.Blueprint;
 import java.util.List;
 import java.util.ArrayList;
 
 public class BlueprintParser{
     String current;
 
-    public class InvalidParserException extends Exception{}
+    public static class InvalidParserException extends Exception{}
+    public static class NotAValidBlueprintException extends Exception{}
 
-    public Tree<String> parse(String toParse){
-        current = toParse;
-        stripFrom("make");
-        String processorName = getString();
-        stripFrom("from");
-        String templateStr = getString();
-        System.out.println("Processor name: " + processorName);
-        System.out.println("Template: " + templateStr);
-        return parseTemplate(templateStr);
-        
+    public Blueprint parse(String toParse) throws NotAValidBlueprintException{
+            current = toParse;
+            stripFrom("make");
+            String processorName = getString();
+            stripFrom("from");
+            String templateStr = getString();
+            Tree<String> parseTree =  parseTemplate(templateStr);
+	    return new Blueprint(processorName, parseTree);
     }
 
-    private void stripFrom(String toStrip){
+    private void stripFrom(String toStrip) throws NotAValidBlueprintException{
         for(int i = 0; i<toStrip.length(); i++){
-            if(toStrip.toUpperCase().charAt(i) != current.toUpperCase().charAt(i)) System.out.println("Pas pareil");
+            if(toStrip.toUpperCase().charAt(i) != current.toUpperCase().charAt(i)) throw new NotAValidBlueprintException();
         }
         current = current.substring(toStrip.length()).trim();
     }
 
-    private String getString(){
+    private String getString() throws NotAValidBlueprintException{
         String temp = "";
-        if(current.charAt(0) != '"') System.out.println("Pas de guillemet");
+        if(current.charAt(0) != '"') throw new NotAValidBlueprintException();
         int i = 1;
         while(current.charAt(i) != '"'){
             temp += current.charAt(i);
@@ -40,12 +40,12 @@ public class BlueprintParser{
         return temp;
     }
 
-    private Tree<String> parseTemplate(String templateStr){
+    private Tree<String> parseTemplate(String templateStr) throws NotAValidBlueprintException{
         Tree<String> root = parseProcessor(templateStr);
         return root;
     }
 
-    private Tree<String> parseProcessor(String templateStr){
+    private Tree<String> parseProcessor(String templateStr) throws NotAValidBlueprintException{
         Tree<String> processorTree = new Tree<String>("<processor>");
         while(templateStr.length() > 0){
             templateStr = templateStr.trim();
@@ -69,8 +69,7 @@ public class BlueprintParser{
                 continue;
             } catch(InvalidParserException e){}
 
-            System.out.println(templateStr);
-            templateStr = "";
+	    throw new NotAValidBlueprintException();
         }
         return processorTree;
     }
@@ -121,9 +120,7 @@ public class BlueprintParser{
                 continue;
             } catch(InvalidParserException e){}
             if(templateStr.length() > 0){
-                System.out.println(optionTree);
                 throw new InvalidParserException();
-                
             }
         }
         parent.addChild(optionTree);
@@ -180,7 +177,7 @@ public class BlueprintParser{
    
     //private String parseOptional
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws NotAValidBlueprintException{
         BlueprintParser bp = new BlueprintParser();
         System.out.println(bp.parse("MAKE \"PrintProcessor\" FROM \"PRINT [AT <delay:number> PER SECOND | ON KEY <key:string>] [<quantity:number> OF] <input>\""));
         System.out.println(bp.parse("MAKE \"PrintProcessor\" FROM \"PRINT <quantity:number> OF <input>\""));

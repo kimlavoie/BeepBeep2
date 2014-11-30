@@ -23,7 +23,7 @@
   </target>
 
   <target name="interpreter" depends="compile">
-    <java classpath="build/classes" classname="ca.uqac.lif.beepbeep2.visitor.Interpreter" >
+    <java classpath="build/classes" classname="ca.uqac.lif.beepbeep2.Interpreter" >
       <classpath refid="lib" />
     </java>
   </target>
