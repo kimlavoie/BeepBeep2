@@ -4,6 +4,8 @@ import ca.uqac.lif.beepbeep2.processor.Processor;
 import java.util.List;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.net.URLClassLoader;
 import java.net.URL;
 import java.lang.reflect.Method;
@@ -17,7 +19,7 @@ public class ProcessorFactory{
 
   public ProcessorFactory(){
     try{
-      URL[] urls = createURLs();
+     URL[] urls = createURLs();
       createClassLoader(urls);
     }catch(ExternalDirectoryNotFoundException e){
       System.err.println("\"" + externalDir + "\" directory not found.");
@@ -43,35 +45,15 @@ public class ProcessorFactory{
       classLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
   }
 
-  public Processor getProcessor(String className){
-    /**
-      Generate a processor from the classname by calling the constructor without parameters
-    */
-    try{
-      Class cl = classLoader.loadClass(className);
-      return (Processor) cl.newInstance();
-    }catch(Exception e){
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return null;
-  }
-
-  public Processor getProcessor(String className, String... params){
+  public Processor getProcessor(String className, Map<String,String> options, List<Processor> inputs){
     /**
       Generate a processor from the classname, calling the constructor with the same amounts of String parameters passed
     */
     try{
-      Object[] parameters = params;
       Class cl = classLoader.loadClass(className);
-      Constructor cons = null;
-      for(Constructor constructor: cl.getConstructors()){
-        if(constructor.getParameterTypes().length == parameters.length){
-          cons = constructor; 
-        }
-      }
+      Constructor cons = cl.getConstructors()[0];
       if(cons != null){
-        return (Processor) cons.newInstance(parameters);
+        return (Processor) cons.newInstance(options, inputs);
       }else{
         throw new Exception("Invalid constructor");
       }
@@ -84,19 +66,23 @@ public class ProcessorFactory{
 
   // For test purpose
   public static void main(String[] args){
-    //ProcessorFactory processorFactory = new ProcessorFactory();
-    //Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+    ProcessorFactory processorFactory = new ProcessorFactory();
+    Map<String, String> options = new HashMap<String,String>();
+    options.put("TestKey", "TestValue");
+    List<Processor> inputs = new ArrayList<Processor>();
+    inputs.add(processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor", options, inputs));
+    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor", options, inputs);
     //Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
     //Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
     //Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
     //Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
-    //processor.run();
-    //processor2.run("event: {x: 0}");
-    //processor3.run("event: {x: 0}");
-    //processor4.run("event: {x: 8}");
-    //processor5.run();
-	  
-	  /*Pipe passPrint= new Pipe();
+    processor.start();
+    //processor2.start("event: {x: 0}");
+    //processor3.start("event: {x: 0}");
+    //processor4.start("event: {x: 8}");
+    //processor5.start();
+/*	  
+	  Pipe passPrint= new Pipe();
 	  Pipe textPass = new Pipe();
 	  
 	  PassThroughProcessor passProc = new PassThroughProcessor(textPass, passPrint);
@@ -104,7 +90,7 @@ public class ProcessorFactory{
 	  TextProcessor textProc = new TextProcessor(null, textPass);
 	  textProc.start();
 	  passProc.start();
-	  printProc.start();*/
+	  printProc.start();
 	  
 	  Pipe plusPrint = new Pipe();
 	  Pipe text1Plus = new Pipe();
@@ -128,6 +114,6 @@ public class ProcessorFactory{
 	  //text3Proc.start();
 	  plusProc.start();
 	  printProc.start();
-	  
+*/	  
   }
 }

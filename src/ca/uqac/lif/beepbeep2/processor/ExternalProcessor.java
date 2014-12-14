@@ -76,11 +76,12 @@ public class ExternalProcessor extends Processor{
     pb = new ProcessBuilder(directory + program);
   }
 
-  public void run(String... events){
+  public void run(){
     /**
       Overriden from Processor
       Send event to program stdin, then listen for response on stdout
     */
+    /*
     String event = events[0];
     try{
       writer.write(event + "\n");
@@ -91,6 +92,7 @@ public class ExternalProcessor extends Processor{
       e.printStackTrace();
       System.exit(1);
     }
+    */
   }
 
   private String readBuffer() throws Exception{
@@ -113,11 +115,6 @@ public class ExternalProcessor extends Processor{
     p.destroy();
   }
 
-@Override
-public void run() {
-	// TODO Auto-generated method stub
-	
-}
 
 // For testing purposes
 /*
