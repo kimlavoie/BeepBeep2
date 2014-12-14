@@ -74,7 +74,6 @@ public class Interpreter{
 
     public static void main(String[] args) throws Exception{
         Interpreter interpreter = new Interpreter();
-	interpreter.init();
 	interpreter.start_from_file("commands.txt");
 	//interpreter.start_interactive();
     }

@@ -31,6 +31,10 @@ public class Tree<T>{
         return children.get(pos);
     }
 
+    public List<Tree<T>> getChildren(){
+        return children;
+    }
+
     public String toString(){
         String temp = " " + this.value + " [";
         for(Tree<T> t : children){
