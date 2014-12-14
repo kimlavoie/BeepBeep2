@@ -45,7 +45,7 @@ public class ProcessorFactory{
       classLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
   }
 
-  public Processor getProcessor(String className, Map<String,String> options, List<Processor> inputs){
+  public Processor getProcessor(String className){
     /**
       Generate a processor from the classname, calling the constructor with the same amounts of String parameters passed
     */
@@ -53,7 +53,7 @@ public class ProcessorFactory{
       Class cl = classLoader.loadClass(className);
       Constructor cons = cl.getConstructors()[0];
       if(cons != null){
-        return (Processor) cons.newInstance(options, inputs);
+        return (Processor) cons.newInstance();
       }else{
         throw new Exception("Invalid constructor");
       }
@@ -67,20 +67,29 @@ public class ProcessorFactory{
   // For test purpose
   public static void main(String[] args){
     ProcessorFactory processorFactory = new ProcessorFactory();
-    Map<String, String> options = new HashMap<String,String>();
-    options.put("TestKey", "TestValue");
-    List<Processor> inputs = new ArrayList<Processor>();
-    inputs.add(processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor", options, inputs));
-    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor", options, inputs);
-    //Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.py");
-    //Processor processor3 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.rb");
-    //Processor processor4 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor", "test.pl");
-    //Processor processor5 = processorFactory.getProcessor("org.test.processor.ProcessorTest");
+    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+    processor.addOption("test", "success");
+    Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor");
+    processor2.addOption("program", "test.py");
+
     processor.start();
-    //processor2.start("event: {x: 0}");
-    //processor3.start("event: {x: 0}");
-    //processor4.start("event: {x: 8}");
-    //processor5.start();
+    processor2.start();
+    try{
+      Thread.sleep(2000);
+    }catch(Exception e){}
+
+    Processor textProc = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.TextProcessor");
+    textProc.addOption("value", "hello");
+    Processor printProc = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.PrintProcessor");
+    Pipe pipe = new Pipe();
+    printProc.addInput(pipe);
+    textProc.addOutput(pipe);
+
+    textProc.start();
+    printProc.start();
+    try{
+      Thread.sleep(2000);
+    }catch(Exception e){}
 /*	  
 	  Pipe passPrint= new Pipe();
 	  Pipe textPass = new Pipe();

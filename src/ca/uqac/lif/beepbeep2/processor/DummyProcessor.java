@@ -5,14 +5,8 @@ import java.util.Map;
 import java.util.List;
 
 public class DummyProcessor extends Processor{
-
-  public DummyProcessor(Map<String,String> options, List<Processor> inputs){
-	  System.out.println("Received options and inputs");
-	  System.out.println(options);
-	  System.out.println(inputs);
-  }
-
   public void run(){
     System.out.println("running DummyProcessor");
+    System.out.println("With option: " + options.get("test"));
   }
 }
