@@ -53,6 +53,10 @@ public abstract class Processor implements Runnable{
     return events.toArray(new String[events.size()]);
   }
 
+  public List<Pipe> getOutputs(){
+    return outputStreams;
+  }
+
   public void cleanup(){}
 
   public abstract void run();
