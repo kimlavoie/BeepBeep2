@@ -69,24 +69,13 @@ public class MySQLSelectProcessor extends Processor {
 			pass = value;
 		else if (name.equals("orderby") && orderby == null)
 			orderby = value;
-		else if (name.equals("column")) {
-			Scanner sc = new Scanner(value);
-			sc.useDelimiter(",");
-			String v1 = sc.next();
-			String v2 = sc.next();
-			columns.put(v1, v2);
-		}
+		
 			
 		
 	}
 	
 	private String createQuery() {
 		String query = "";
-		/*for (Iterator<String> i = columns.iterator(); i.hasNext(); ) {
-			query += table+"."+i.next();
-			if (i.hasNext())
-				query += ",";
-		}*/
 		query = "SELECT * FROM "+table+";";//+" ORDER BY "+orderby+" ASC;";
 		return query;
 	}
@@ -97,38 +86,6 @@ public class MySQLSelectProcessor extends Processor {
 		for(int i=1;i<=columnCount;i++) {
 			result += rsmd.getColumnName(i)+":"+rs.getString(i)+"\n ";
 		}
-		
-		/*for(Entry<String,String> entry : columns.entrySet()) {
-			//System.out.println(entry.getKey()+" "+ entry.getValue());
-			result+= entry.getKey()+":";
-			if (!result.equals(""))
-				result += ",";
-			
-			if (entry.getValue().equals("int")){
-				int i = rs.getInt(entry.getKey());
-				result += i;
-			}
-			else if (entry.getValue().equals("float")){
-				float i = rs.getFloat(entry.getKey());
-				result += i;
-			}
-			else if (entry.getValue().equals("double")){
-				double i = rs.getDouble(entry.getKey());
-				result += i;
-			}
-			else if (entry.getValue().equals("boolean")){
-				boolean i = rs.getBoolean(entry.getKey());
-				result += i;
-			}
-			else if (entry.getValue().equals("varchar")){
-				String i = rs.getString(entry.getKey());
-				result += i;
-			}
-			else {
-				result += "notsupported";
-			}
-			result += "\n ";
-		}*/
 		return result;
 	}
 
