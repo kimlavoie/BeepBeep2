@@ -84,7 +84,7 @@ public class MySQLSelectProcessor extends Processor {
 		String result = "message:\n ";
 		int columnCount = rsmd.getColumnCount();
 		for(int i=1;i<=columnCount;i++) {
-			result += rsmd.getColumnName(i)+":"+rs.getString(i)+"\n ";
+			result += rsmd.getColumnName(i)+": "+rs.getString(i)+"\n ";
 		}
 		return result;
 	}
