@@ -67,7 +67,7 @@ public class ProcessorFactory{
   // For test purpose
   public static void main(String[] args){
     ProcessorFactory processorFactory = new ProcessorFactory();
-    Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
+   /* Processor processor = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.DummyProcessor");
     processor.addOption("test", "success");
     Processor processor2 = processorFactory.getProcessor("ca.uqac.lif.beepbeep2.processor.ExternalProcessor");
     processor2.addOption("program", "test.py");
@@ -124,13 +124,15 @@ public class ProcessorFactory{
 	  //text3Proc.start();
 	  plusProc.start();
 	  printProc.start();
+	  */
 	  
-	  //Pipe selectPrint = new Pipe();
-	  //MySQLSelectProcessor selectProc = new MySQLSelectProcessor(null, selectPrint);
-	  //PrintProcessor printProc = new PrintProcessor(selectPrint, null);
-	  
-	  //selectProc.start();
-	  //printProc.start();
-*/	  
+	  Pipe selectPrint = new Pipe();
+	  MySQLSelectProcessor selectProc = new MySQLSelectProcessor();
+	  PrintProcessor printProc = new PrintProcessor();
+	  selectProc.addOutput(selectPrint);
+	  printProc.addInput(selectPrint);
+	  selectProc.start();
+	  printProc.start();
+  
   }
 }

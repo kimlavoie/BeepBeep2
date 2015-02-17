@@ -46,7 +46,7 @@ public class MySQLSelectProcessor extends Processor {
 		}
 		
 		try{
-			url = "jdbc:mysql://"+ip+"/"+database;
+			url = "jdbc:mysql://localhost/"+database;
 			
 			Class.forName(driver).newInstance();
 			conn = DriverManager.getConnection(url, user, pass);
@@ -87,14 +87,20 @@ public class MySQLSelectProcessor extends Processor {
 			if (i.hasNext())
 				query += ",";
 		}*/
-		query = "SELECT * FROM "+table+" ORDER BY "+orderby+" ASC;";
+		query = "SELECT * FROM "+table+";";//+" ORDER BY "+orderby+" ASC;";
 		return query;
 	}
 	
-	private String getRow(ResultSet rs) throws SQLException {
-		String result = "";
-		for(Entry<String,String> entry : columns.entrySet()) {
+	private String getRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException {
+		String result = "message:\n ";
+		int columnCount = rsmd.getColumnCount();
+		for(int i=1;i<=columnCount;i++) {
+			result += rsmd.getColumnName(i)+":"+rs.getString(i)+"\n ";
+		}
+		
+		/*for(Entry<String,String> entry : columns.entrySet()) {
 			//System.out.println(entry.getKey()+" "+ entry.getValue());
+			result+= entry.getKey()+":";
 			if (!result.equals(""))
 				result += ",";
 			
@@ -102,37 +108,51 @@ public class MySQLSelectProcessor extends Processor {
 				int i = rs.getInt(entry.getKey());
 				result += i;
 			}
+			else if (entry.getValue().equals("float")){
+				float i = rs.getFloat(entry.getKey());
+				result += i;
+			}
+			else if (entry.getValue().equals("double")){
+				double i = rs.getDouble(entry.getKey());
+				result += i;
+			}
+			else if (entry.getValue().equals("boolean")){
+				boolean i = rs.getBoolean(entry.getKey());
+				result += i;
+			}
 			else if (entry.getValue().equals("varchar")){
 				String i = rs.getString(entry.getKey());
 				result += i;
 			}
-			
-		}
+			else {
+				result += "notsupported";
+			}
+			result += "\n ";
+		}*/
 		return result;
 	}
 
 	@Override
 	public void run(){
 		// TODO Auto-generated method stub
-		while(true){
+		//while(true){
 			try{
 				
 				String query = createQuery();
 				System.out.println(query);
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery(query);
+				ResultSetMetaData rsmd = rs.getMetaData();
 				while(rs.next())
 				{
-					write(getRow(rs));
+					write(getRow(rs,rsmd));
 				}
 
 			}
-			catch(Exception e){
-				System.out.println("Query Exception");
+			catch(SQLException e){
+				System.out.println(e);
 			}
-		}
-		
-		
+		//}
 		
 	}
 

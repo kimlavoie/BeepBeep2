@@ -4,5 +4,5 @@ user:simon
 pass:POxSvEdobumET2i0iicA
 table:animals
 orderby:id
-column:id
-column:name
+column:id,int
+column:name,varchar
